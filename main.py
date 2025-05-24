@@ -2,7 +2,14 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # ← Ceci autorise les requêtes cross-origin
+
+@app.route("/api/horaire")
+def horaire():
+    # Remplace ceci par tes vraies données ou ton scraping
+    data = [{"date": "2025-05-19", "time": "06:00 - 07:00", "name": "N1 - Introduction Boxe", "coach": "Coach A"}]
+    return jsonify(data)
+
 
 # Données simulées (à remplacer par un import depuis une base ou un autre script)
 horaires = [
