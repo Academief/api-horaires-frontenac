@@ -1,46 +1,21 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-import requests
-from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/api/horaires', methods=['GET'])
+# Données simulées (à remplacer par un import depuis une base ou un autre script)
+horaires = [
+    {"coach": "03-Nicolas Roy", "date": "2025-05-21", "name": "N1 - Introduction boxe", "time": "06:00 - 07:00"},
+    {"coach": "Estefanio Abreu", "date": "2025-05-21", "name": "N2 - Régulier boxe", "time": "07:00 - 08:00"},
+    {"coach": "David Azor", "date": "2025-05-24", "name": "N1 - Introduction boxe", "time": "10:30 - 11:30"},
+    {"coach": "Ralia Guassemi", "date": "2025-05-25", "name": "N3 - Intermédiaire boxe", "time": "11:30 - 13:00"}
+]
+
+@app.route('/horaires', methods=['GET'])
 def get_horaires():
-    url = "https://academiefrontenac.fliipapp.com/horaire/1ff8a7b5dc7a7d1f0ed65aaa29c04b1e/DefaultRoom"
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-
-    classes = []
-
-    for div in soup.select('.table-chk.eg-double-classbox'):
-        course_id = div.get('data-id')
-        date = div.get('data-date')
-        
-        class_name_tag = div.select_one('.class_name')
-        class_time_tag = div.select_one('.class_time')
-        
-        name = class_name_tag.get_text(strip=True) if class_name_tag else ""
-        time = class_time_tag.get_text(strip=True) if class_time_tag else ""
-        
-        coach = ""
-        original_title = div.find('p').get('data-original-title')
-        if original_title:
-            soup_title = BeautifulSoup(original_title, 'html.parser')
-            coach_tag = soup_title.find('span', string=lambda text: "Instructeur" in text if text else False)
-            if coach_tag:
-                coach = coach_tag.get_text(strip=True).replace("Instructeur :", "").strip()
-
-        classes.append({
-            "id": course_id,
-            "date": date,
-            "time": time,
-            "name": name,
-            "coach": coach
-        })
-
-    return jsonify(classes)
+    return jsonify(horaires)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3000)
+    app.run(host='0.0.0.0', port=8080)
+
